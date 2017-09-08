@@ -275,9 +275,7 @@ external interface `T$1` {
     var off: Boolean
     var step: Any
 }
-@JsModule("jquery")
-@JsNonModule
-external open class JQueryStatic {
+external interface JQueryStatic {
     fun ajax(settings: JQueryAjaxSettings): JQueryXHR
     fun ajax(url: String, settings: JQueryAjaxSettings? = definedExternally /* null */): JQueryXHR
     fun ajaxPrefilter(dataTypes: String, handler: (opts: Any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) -> Any)
@@ -393,7 +391,7 @@ external interface `T$4` {
     operator fun set(method: String, value: (args: Any) -> Any)
 }
 
-external open class JQuery {
+external interface JQuery {
     fun ajaxComplete(handler: (event: JQueryEventObject, XMLHttpRequest: XMLHttpRequest, ajaxOptions: Any) -> Any): JQuery
     fun ajaxError(handler: (event: JQueryEventObject, jqXHR: JQueryXHR, ajaxSettings: JQueryAjaxSettings, thrownError: Any) -> Any): JQuery
     fun ajaxSend(handler: (event: JQueryEventObject, jqXHR: JQueryXHR, ajaxOptions: JQueryAjaxSettings) -> Any): JQuery
@@ -806,9 +804,11 @@ external open class JQuery {
     fun extend(`object`: `T$4`): JQuery
 }
 
+@JsModule("jquery")
+@JsNonModule
 external val jQuery: JQueryStatic = definedExternally
 external val `$`: JQueryStatic = definedExternally
 
 object Factory {
-    fun getInstance(): JQueryStatic = JQueryStatic()
+    fun getInstance(): JQueryStatic = jQuery
 }
