@@ -1,0 +1,58 @@
+buildscript {
+    ext.kotlin_version = '1.1.4-3'
+    ext.output_filename = "jquery-kotlin"
+
+    repositories {
+        jcenter()
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+group = 'pl.treksoft'
+version = '0.0.1'
+
+apply plugin: 'kotlin2js'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+}
+
+compileKotlin2Js {
+    kotlinOptions.metaInfo = true
+    kotlinOptions.outputFile = "$project.buildDir.path/js/${project.name}.js"
+    kotlinOptions.sourceMap = false
+    kotlinOptions.moduleKind = 'commonjs'
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    baseName = project.name
+    from "build/js"
+    include "${output_filename}*.js"
+    include "${output_filename}/**/*.*"
+}
+
+if(project.gradle.startParameter.taskNames.contains("jar")){
+    compileKotlin2Js.dependsOn 'cleanJar'
+}
+
+task cleanJar {
+    dependsOn 'cleanJs'
+    doFirst {
+        delete 'build/libs'
+    }
+}
+
+task cleanJs {
+    doFirst {
+        delete 'build/js'
+    }
+}
