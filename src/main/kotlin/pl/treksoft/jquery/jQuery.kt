@@ -20,9 +20,9 @@ import org.w3c.xhr.*
 external interface JQueryAjaxSettings {
     var accepts: Any? get() = definedExternally; set(value) = definedExternally
     var async: Boolean? get() = definedExternally; set(value) = definedExternally
-    val beforeSend: ((jqXHR: JQueryXHR, settings: JQueryAjaxSettings) -> Any)? get() = definedExternally
+    val beforeSend: ((jqXHR: JQueryXHR, settings: JQueryAjaxSettings) -> Any?)? get() = definedExternally
     var cache: Boolean? get() = definedExternally; set(value) = definedExternally
-    val complete: ((jqXHR: JQueryXHR, textStatus: String) -> Any)? get() = definedExternally
+    val complete: ((jqXHR: JQueryXHR, textStatus: String) -> Any?)? get() = definedExternally
     var contents: Json? get() = definedExternally; set(value) = definedExternally
     var contentType: Any? get() = definedExternally; set(value) = definedExternally
     var context: Any? get() = definedExternally; set(value) = definedExternally
@@ -31,7 +31,7 @@ external interface JQueryAjaxSettings {
     var data: Any? get() = definedExternally; set(value) = definedExternally
     val dataFilter: ((data: Any, ty: Any) -> Any)? get() = definedExternally
     var dataType: String? get() = definedExternally; set(value) = definedExternally
-    val error: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: String) -> Any)? get() = definedExternally
+    val error: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: String) -> Any?)? get() = definedExternally
     var global: Boolean? get() = definedExternally; set(value) = definedExternally
     var headers: Json? get() = definedExternally; set(value) = definedExternally
     var ifModified: Boolean? get() = definedExternally; set(value) = definedExternally
@@ -44,7 +44,7 @@ external interface JQueryAjaxSettings {
     var processData: Boolean? get() = definedExternally; set(value) = definedExternally
     var scriptCharset: String? get() = definedExternally; set(value) = definedExternally
     var statusCode: Json? get() = definedExternally; set(value) = definedExternally
-    val success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? get() = definedExternally
+    val success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any?)? get() = definedExternally
     var timeout: Number? get() = definedExternally; set(value) = definedExternally
     var traditional: Boolean? get() = definedExternally; set(value) = definedExternally
     var type: String? get() = definedExternally; set(value) = definedExternally
@@ -76,7 +76,7 @@ external interface JQueryCallback {
     fun remove(callbacks: Array<Function<*>>): JQueryCallback
 }
 external interface JQueryGenericPromise<T> {
-    fun <U> then(doneFilter: (value: T? /*= null*/, values: Any) -> dynamic /* U | JQueryPromise<U> */, failFilter: ((reasons: Any) -> Any)? = definedExternally /* null */, progressFilter: ((progression: Any) -> Any)? = definedExternally /* null */): JQueryPromise<U>
+    fun <U> then(doneFilter: (value: T? /*= null*/, values: Any) -> dynamic /* U | JQueryPromise<U> */, failFilter: ((reasons: Any) -> Any?)? = definedExternally /* null */, progressFilter: ((progression: Any) -> Any)? = definedExternally /* null */): JQueryPromise<U>
     fun then(doneFilter: (value: T? /*= null*/, values: Any) -> Unit, failFilter: ((reasons: Any) -> Any)? = definedExternally /* null */, progressFilter: ((progression: Any) -> Any)? = definedExternally /* null */): JQueryPromise<Unit>
 }
 external interface JQueryPromiseCallback<T> {
@@ -242,12 +242,12 @@ external interface JQueryAnimationOptions {
     var duration: Any? get() = definedExternally; set(value) = definedExternally
     var easing: String? get() = definedExternally; set(value) = definedExternally
     var complete: Function<*>? get() = definedExternally; set(value) = definedExternally
-    var step: ((now: Number, tween: Any) -> Any)? get() = definedExternally; set(value) = definedExternally
-    var progress: ((animation: JQueryPromise<Any>, progress: Number, remainingMs: Number) -> Any)? get() = definedExternally; set(value) = definedExternally
-    var start: ((animation: JQueryPromise<Any>) -> Any)? get() = definedExternally; set(value) = definedExternally
-    var done: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any)? get() = definedExternally; set(value) = definedExternally
-    var fail: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any)? get() = definedExternally; set(value) = definedExternally
-    var always: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any)? get() = definedExternally; set(value) = definedExternally
+    var step: ((now: Number, tween: Any) -> Any?)? get() = definedExternally; set(value) = definedExternally
+    var progress: ((animation: JQueryPromise<Any>, progress: Number, remainingMs: Number) -> Any?)? get() = definedExternally; set(value) = definedExternally
+    var start: ((animation: JQueryPromise<Any>) -> Any?)? get() = definedExternally; set(value) = definedExternally
+    var done: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any?)? get() = definedExternally; set(value) = definedExternally
+    var fail: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any?)? get() = definedExternally; set(value) = definedExternally
+    var always: ((animation: JQueryPromise<Any>, jumpedToEnd: Boolean) -> Any?)? get() = definedExternally; set(value) = definedExternally
     var queue: Any? get() = definedExternally; set(value) = definedExternally
     var specialEasing: Any? get() = definedExternally; set(value) = definedExternally
 }
@@ -278,23 +278,23 @@ external interface `T$1` {
 external interface JQueryStatic {
     fun ajax(settings: JQueryAjaxSettings): JQueryXHR
     fun ajax(url: String, settings: JQueryAjaxSettings? = definedExternally /* null */): JQueryXHR
-    fun ajaxPrefilter(dataTypes: String, handler: (opts: Any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) -> Any)
-    fun ajaxPrefilter(handler: (opts: Any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) -> Any)
-    fun ajaxTransport(dataType: String, handler: (opts: Any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) -> Any)
+    fun ajaxPrefilter(dataTypes: String, handler: (opts: Any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) -> Any?)
+    fun ajaxPrefilter(handler: (opts: Any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) -> Any?)
+    fun ajaxTransport(dataType: String, handler: (opts: Any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) -> Any?)
     var ajaxSettings: JQueryAjaxSettings
     fun ajaxSetup(options: JQueryAjaxSettings)
-    fun get(url: String, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
-    fun get(url: String, data: Any? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
-    fun get(url: String, data: String? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
+    fun get(url: String, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any?)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
+    fun get(url: String, data: Any? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any?)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
+    fun get(url: String, data: String? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any?)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
     fun get(settings: JQueryAjaxSettings): JQueryXHR
-    fun getJSON(url: String, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = definedExternally /* null */): JQueryXHR
-    fun getJSON(url: String, data: Any? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = definedExternally /* null */): JQueryXHR
-    fun getJSON(url: String, data: String? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = definedExternally /* null */): JQueryXHR
-    fun getScript(url: String, success: ((script: String, textStatus: String, jqXHR: JQueryXHR) -> Any)? = definedExternally /* null */): JQueryXHR
+    fun getJSON(url: String, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any?)? = definedExternally /* null */): JQueryXHR
+    fun getJSON(url: String, data: Any? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any?)? = definedExternally /* null */): JQueryXHR
+    fun getJSON(url: String, data: String? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any?)? = definedExternally /* null */): JQueryXHR
+    fun getScript(url: String, success: ((script: String, textStatus: String, jqXHR: JQueryXHR) -> Any?)? = definedExternally /* null */): JQueryXHR
     var param: JQueryParam
-    fun post(url: String, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
-    fun post(url: String, data: Any? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
-    fun post(url: String, data: String? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
+    fun post(url: String, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any?)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
+    fun post(url: String, data: Any? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any?)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
+    fun post(url: String, data: String? = definedExternally /* null */, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any?)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
     fun post(settings: JQueryAjaxSettings): JQueryXHR
     fun Callbacks(flags: String? = definedExternally /* null */): JQueryCallback
     fun holdReady(hold: Boolean)
@@ -307,7 +307,7 @@ external interface JQueryStatic {
     @nativeInvoke
     operator fun invoke(elementArray: Array<Element>): JQuery
     @nativeInvoke
-    operator fun invoke(callback: (jQueryAlias: JQueryStatic? /*= null*/) -> Any): JQuery
+    operator fun invoke(callback: (jQueryAlias: JQueryStatic? /*= null*/) -> Any?): JQuery
     @nativeInvoke
     operator fun invoke(`object`: Any): JQuery
     @nativeInvoke
@@ -332,10 +332,10 @@ external interface JQueryStatic {
     fun queue(element: Element, queueName: String, newQueue: Array<Function<*>>): JQuery
     fun queue(element: Element, queueName: String, callback: Function<*>): JQuery
     fun removeData(element: Element, name: String? = definedExternally /* null */): JQuery
-    fun <T> Deferred(beforeStart: ((deferred: JQueryDeferred<T>) -> Any)? = definedExternally /* null */): JQueryDeferred<T>
+    fun <T> Deferred(beforeStart: ((deferred: JQueryDeferred<T>) -> Any?)? = definedExternally /* null */): JQueryDeferred<T>
     var easing: JQueryEasingFunctions
     var fx: `T$1`
-    fun proxy(func: (args: Any) -> Any, context: Any, vararg additionalArguments: Any): Any
+    fun proxy(func: (args: Any) -> Any?, context: Any, vararg additionalArguments: Any): Any
     fun proxy(context: Any, name: String, vararg additionalArguments: Any): Any
     var Event: JQueryEventConstructor
     fun error(message: Any): JQuery
@@ -374,32 +374,32 @@ external interface JQueryStatic {
 }
 external interface `T$2` {
     @nativeGetter
-    operator fun get(key: String): ((eventObject: JQueryEventObject, args: Any) -> Any)?
+    operator fun get(key: String): ((eventObject: JQueryEventObject, args: Any) -> Any?)?
     @nativeSetter
-    operator fun set(key: String, value: (eventObject: JQueryEventObject, args: Any) -> Any)
+    operator fun set(key: String, value: (eventObject: JQueryEventObject, args: Any) -> Any?)
 }
 external interface `T$3` {
     @nativeGetter
-    operator fun get(key: String): ((eventObject: JQueryEventObject, args: Any) -> Any)?
+    operator fun get(key: String): ((eventObject: JQueryEventObject, args: Any) -> Any?)?
     @nativeSetter
-    operator fun set(key: String, value: (eventObject: JQueryEventObject, args: Any) -> Any)
+    operator fun set(key: String, value: (eventObject: JQueryEventObject, args: Any) -> Any?)
 }
 external interface `T$4` {
     @nativeGetter
-    operator fun get(method: String): ((args: Any) -> Any)?
+    operator fun get(method: String): ((args: Any) -> Any?)?
     @nativeSetter
-    operator fun set(method: String, value: (args: Any) -> Any)
+    operator fun set(method: String, value: (args: Any) -> Any?)
 }
 
 external interface JQuery {
-    fun ajaxComplete(handler: (event: JQueryEventObject, XMLHttpRequest: XMLHttpRequest, ajaxOptions: Any) -> Any): JQuery
-    fun ajaxError(handler: (event: JQueryEventObject, jqXHR: JQueryXHR, ajaxSettings: JQueryAjaxSettings, thrownError: Any) -> Any): JQuery
-    fun ajaxSend(handler: (event: JQueryEventObject, jqXHR: JQueryXHR, ajaxOptions: JQueryAjaxSettings) -> Any): JQuery
-    fun ajaxStart(handler: () -> Any): JQuery
-    fun ajaxStop(handler: () -> Any): JQuery
-    fun ajaxSuccess(handler: (event: JQueryEventObject, XMLHttpRequest: XMLHttpRequest, ajaxOptions: JQueryAjaxSettings) -> Any): JQuery
-    fun load(url: String, data: String? = definedExternally /* null */, complete: ((responseText: String, textStatus: String, XMLHttpRequest: XMLHttpRequest) -> Any)? = definedExternally /* null */): JQuery
-    fun load(url: String, data: Any? = definedExternally /* null */, complete: ((responseText: String, textStatus: String, XMLHttpRequest: XMLHttpRequest) -> Any)? = definedExternally /* null */): JQuery
+    fun ajaxComplete(handler: (event: JQueryEventObject, XMLHttpRequest: XMLHttpRequest, ajaxOptions: Any) -> Any?): JQuery
+    fun ajaxError(handler: (event: JQueryEventObject, jqXHR: JQueryXHR, ajaxSettings: JQueryAjaxSettings, thrownError: Any) -> Any?): JQuery
+    fun ajaxSend(handler: (event: JQueryEventObject, jqXHR: JQueryXHR, ajaxOptions: JQueryAjaxSettings) -> Any?): JQuery
+    fun ajaxStart(handler: () -> Any?): JQuery
+    fun ajaxStop(handler: () -> Any?): JQuery
+    fun ajaxSuccess(handler: (event: JQueryEventObject, XMLHttpRequest: XMLHttpRequest, ajaxOptions: JQueryAjaxSettings) -> Any?): JQuery
+    fun load(url: String, data: String? = definedExternally /* null */, complete: ((responseText: String, textStatus: String, XMLHttpRequest: XMLHttpRequest) -> Any?)? = definedExternally /* null */): JQuery
+    fun load(url: String, data: Any? = definedExternally /* null */, complete: ((responseText: String, textStatus: String, XMLHttpRequest: XMLHttpRequest) -> Any?)? = definedExternally /* null */): JQuery
     fun serialize(): String
     fun serializeArray(): Array<JQuerySerializeArrayElement>
     fun addClass(className: String): JQuery
@@ -420,7 +420,7 @@ external interface JQuery {
     fun prop(propertyName: String, value: Number): JQuery
     fun prop(propertyName: String, value: Boolean): JQuery
     fun prop(properties: Any): JQuery
-    fun prop(propertyName: String, func: (index: Number, oldPropertyValue: Any) -> Any): JQuery
+    fun prop(propertyName: String, func: (index: Number, oldPropertyValue: Any) -> Any?): JQuery
     fun removeAttr(attributeName: String): JQuery
     fun removeClass(className: String? = definedExternally /* null */): JQuery
     fun removeClass(func: (index: Number, className: String) -> String): JQuery
@@ -536,120 +536,120 @@ external interface JQuery {
     fun toggle(duration: String? = definedExternally /* null */, easing: String? = definedExternally /* null */, complete: Function<*>? = definedExternally /* null */): JQuery
     fun toggle(options: JQueryAnimationOptions): JQuery
     fun toggle(showOrHide: Boolean): JQuery
-    fun bind(eventType: String, eventData: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun bind(eventType: String, handler: (eventObject: JQueryEventObject) -> Any): JQuery
+    fun bind(eventType: String, eventData: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun bind(eventType: String, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun bind(eventType: String, eventData: Any, preventBubble: Boolean): JQuery
     fun bind(eventType: String, preventBubble: Boolean): JQuery
     fun bind(events: Any): JQuery
     fun blur(): JQuery
-    fun blur(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun blur(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any)? = definedExternally /* null */): JQuery
+    fun blur(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun blur(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any?)? = definedExternally /* null */): JQuery
     fun change(): JQuery
-    fun change(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun change(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any)? = definedExternally /* null */): JQuery
+    fun change(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun change(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any?)? = definedExternally /* null */): JQuery
     fun click(): JQuery
-    fun click(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun click(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any)? = definedExternally /* null */): JQuery
+    fun click(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun click(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any?)? = definedExternally /* null */): JQuery
     fun contextmenu(): JQuery
-    fun contextmenu(handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
-    fun contextmenu(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
+    fun contextmenu(handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
+    fun contextmenu(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
     fun dblclick(): JQuery
-    fun dblclick(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun dblclick(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any)? = definedExternally /* null */): JQuery
-    fun delegate(selector: Any, eventType: String, handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun delegate(selector: Any, eventType: String, eventData: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
+    fun dblclick(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun dblclick(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any?)? = definedExternally /* null */): JQuery
+    fun delegate(selector: Any, eventType: String, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun delegate(selector: Any, eventType: String, eventData: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun focus(): JQuery
-    fun focus(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun focus(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any)? = definedExternally /* null */): JQuery
+    fun focus(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun focus(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any?)? = definedExternally /* null */): JQuery
     fun focusin(): JQuery
-    fun focusin(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun focusin(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
+    fun focusin(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun focusin(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun focusout(): JQuery
-    fun focusout(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun focusout(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun hover(handlerIn: (eventObject: JQueryEventObject) -> Any, handlerOut: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun hover(handlerInOut: (eventObject: JQueryEventObject) -> Any): JQuery
+    fun focusout(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun focusout(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun hover(handlerIn: (eventObject: JQueryEventObject) -> Any?, handlerOut: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun hover(handlerInOut: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun keydown(): JQuery
-    fun keydown(handler: (eventObject: JQueryKeyEventObject) -> Any): JQuery
-    fun keydown(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryKeyEventObject) -> Any)? = definedExternally /* null */): JQuery
+    fun keydown(handler: (eventObject: JQueryKeyEventObject) -> Any?): JQuery
+    fun keydown(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryKeyEventObject) -> Any?)? = definedExternally /* null */): JQuery
     fun keypress(): JQuery
-    fun keypress(handler: (eventObject: JQueryKeyEventObject) -> Any): JQuery
-    fun keypress(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryKeyEventObject) -> Any)? = definedExternally /* null */): JQuery
+    fun keypress(handler: (eventObject: JQueryKeyEventObject) -> Any?): JQuery
+    fun keypress(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryKeyEventObject) -> Any?)? = definedExternally /* null */): JQuery
     fun keyup(): JQuery
-    fun keyup(handler: (eventObject: JQueryKeyEventObject) -> Any): JQuery
-    fun keyup(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryKeyEventObject) -> Any)? = definedExternally /* null */): JQuery
-    fun load(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun load(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any)? = definedExternally /* null */): JQuery
+    fun keyup(handler: (eventObject: JQueryKeyEventObject) -> Any?): JQuery
+    fun keyup(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryKeyEventObject) -> Any?)? = definedExternally /* null */): JQuery
+    fun load(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun load(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any?)? = definedExternally /* null */): JQuery
     fun mousedown(): JQuery
-    fun mousedown(handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
-    fun mousedown(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
+    fun mousedown(handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
+    fun mousedown(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
     fun mouseenter(): JQuery
-    fun mouseenter(handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
-    fun mouseenter(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
+    fun mouseenter(handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
+    fun mouseenter(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
     fun mouseleave(): JQuery
-    fun mouseleave(handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
-    fun mouseleave(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
+    fun mouseleave(handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
+    fun mouseleave(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
     fun mousemove(): JQuery
-    fun mousemove(handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
-    fun mousemove(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
+    fun mousemove(handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
+    fun mousemove(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
     fun mouseout(): JQuery
-    fun mouseout(handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
-    fun mouseout(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
+    fun mouseout(handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
+    fun mouseout(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
     fun mouseover(): JQuery
-    fun mouseover(handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
-    fun mouseover(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
+    fun mouseover(handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
+    fun mouseover(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
     fun mouseup(): JQuery
-    fun mouseup(handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
-    fun mouseup(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any): JQuery
+    fun mouseup(handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
+    fun mouseup(eventData: Any, handler: (eventObject: JQueryMouseEventObject) -> Any?): JQuery
     fun off(): JQuery
-    fun off(events: String, selector: String? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any)? = definedExternally /* null */): JQuery
-    fun off(events: String, handler: (eventObject: JQueryEventObject, args: Any) -> Any): JQuery
-    fun off(events: String, handler: (eventObject: JQueryEventObject) -> Any): JQuery
+    fun off(events: String, selector: String? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any?)? = definedExternally /* null */): JQuery
+    fun off(events: String, handler: (eventObject: JQueryEventObject, args: Any) -> Any?): JQuery
+    fun off(events: String, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun off(events: Json, selector: String? = definedExternally /* null */): JQuery
-    fun on(events: String, handler: (eventObject: JQueryEventObject, args: Any) -> Any): JQuery
-    fun on(events: String, data: Any, handler: (eventObject: JQueryEventObject, args: Any) -> Any): JQuery
-    fun on(events: String, selector: String, handler: (eventObject: JQueryEventObject, eventData: Any) -> Any): JQuery
-    fun on(events: String, selector: String, data: Any, handler: (eventObject: JQueryEventObject, eventData: Any) -> Any): JQuery
+    fun on(events: String, handler: (eventObject: JQueryEventObject, args: Any) -> Any?): JQuery
+    fun on(events: String, data: Any, handler: (eventObject: JQueryEventObject, args: Any) -> Any?): JQuery
+    fun on(events: String, selector: String, handler: (eventObject: JQueryEventObject, eventData: Any) -> Any?): JQuery
+    fun on(events: String, selector: String, data: Any, handler: (eventObject: JQueryEventObject, eventData: Any) -> Any?): JQuery
     fun on(events: `T$2`, selector: String? = definedExternally /* null */, data: Any? = definedExternally /* null */): JQuery
     fun on(events: `T$3`, data: Any? = definedExternally /* null */): JQuery
-    fun one(events: String, handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun one(events: String, data: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun one(events: String, selector: String, handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun one(events: String, selector: String, data: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
+    fun one(events: String, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun one(events: String, data: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun one(events: String, selector: String, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun one(events: String, selector: String, data: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun one(events: Json, selector: String? = definedExternally /* null */, data: Any? = definedExternally /* null */): JQuery
     fun one(events: Json, data: Any? = definedExternally /* null */): JQuery
-    fun ready(handler: (jQueryAlias: JQueryStatic? /*= null*/) -> Any): JQuery
+    fun ready(handler: (jQueryAlias: JQueryStatic? /*= null*/) -> Any?): JQuery
     fun resize(): JQuery
-    fun resize(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun resize(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
+    fun resize(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun resize(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun scroll(): JQuery
-    fun scroll(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun scroll(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
+    fun scroll(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun scroll(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun select(): JQuery
-    fun select(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun select(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
+    fun select(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun select(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun submit(): JQuery
-    fun submit(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun submit(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any)? = definedExternally /* null */): JQuery
+    fun submit(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun submit(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any?)? = definedExternally /* null */): JQuery
     fun trigger(eventType: String, extraParameters: Array<Any>? = definedExternally /* null */): JQuery
     fun trigger(eventType: String, extraParameters: Any? = definedExternally /* null */): JQuery
     fun trigger(event: JQueryEventObject, extraParameters: Array<Any>? = definedExternally /* null */): JQuery
     fun trigger(event: JQueryEventObject, extraParameters: Any? = definedExternally /* null */): JQuery
     fun triggerHandler(eventType: String, vararg extraParameters: Any): Any
     fun triggerHandler(event: JQueryEventObject, vararg extraParameters: Any): Any
-    fun unbind(eventType: String? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any)? = definedExternally /* null */): JQuery
+    fun unbind(eventType: String? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any?)? = definedExternally /* null */): JQuery
     fun unbind(eventType: String, fls: Boolean): JQuery
     fun unbind(evt: Any): JQuery
     fun undelegate(): JQuery
-    fun undelegate(selector: String, eventType: String, handler: ((eventObject: JQueryEventObject) -> Any)? = definedExternally /* null */): JQuery
+    fun undelegate(selector: String, eventType: String, handler: ((eventObject: JQueryEventObject) -> Any?)? = definedExternally /* null */): JQuery
     fun undelegate(selector: String, events: Any): JQuery
     fun undelegate(namespace: String): JQuery
-    fun unload(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun unload(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any)? = definedExternally /* null */): JQuery
+    fun unload(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun unload(eventData: Any? = definedExternally /* null */, handler: ((eventObject: JQueryEventObject) -> Any?)? = definedExternally /* null */): JQuery
     var context: Element
     var jquery: String
-    fun error(handler: (eventObject: JQueryEventObject) -> Any): JQuery
-    fun error(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any): JQuery
+    fun error(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun error(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun pushStack(elements: Array<Any>): JQuery
     fun pushStack(elements: Array<Any>, name: String, arguments: Array<Any>): JQuery
     fun after(content1: JQuery, vararg content2: Any): JQuery
