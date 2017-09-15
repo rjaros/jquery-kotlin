@@ -20,5 +20,17 @@ To use it in your project add the following code in your build.gradle file.
 
     dependencies {
         ...
-        compile "pl.treksoft:jquery-kotlin:0.0.1"
+        compile "pl.treksoft:jquery-kotlin:[version]"
+    }
+
+Use [kotlin-frontend-plugin](https://github.com/Kotlin/kotlin-frontend-plugin) to include jQuery to your project.
+
+    kotlinFrontend {
+        ...
+        npm {
+            ...
+            dependency "jquery"
+            ...
+        }
+        ...
     }
