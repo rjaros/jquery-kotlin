@@ -1,6 +1,6 @@
 buildscript {
     ext.production = (findProperty('prod') ?: 'false') == 'true'
-    ext.kotlin_version = "1.2.20"
+    ext.kotlin_version = "1.3.11"
 
     repositories {
         mavenCentral()
@@ -12,14 +12,16 @@ buildscript {
 }
 
 plugins {
+    id "maven"
     id "maven-publish"
     id "com.jfrog.bintray" version "1.7.3"
 }
 
-apply plugin: 'kotlin2js'
+apply plugin: 'kotlin-platform-js'
+apply from: rootProject.file('pom.gradle')
 
 group = 'pl.treksoft'
-version = '0.0.3'
+version = '0.0.4'
 
 repositories {
     mavenCentral()
@@ -29,38 +31,52 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
 }
 
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
 task cleanLibs(type: Delete) {
     delete 'build/classes', 'build/libs'
 }
 
-if (project.gradle.startParameter.taskNames.contains("jar")){
+if (project.gradle.startParameter.taskNames.contains("jar")) {
     compileKotlin2Js.dependsOn 'cleanLibs'
 }
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    excludes = [ "package.json" ]
 }
 
 compileKotlin2Js {
     kotlinOptions.metaInfo = true
     kotlinOptions.sourceMap = !production
-    kotlinOptions.moduleKind = 'commonjs'
+    kotlinOptions.moduleKind = 'umd'
 }
 
 publishing {
     publications {
-        maven(MavenPublication) {
+        mavenProject(MavenPublication) {
             from components.java
+            groupId project.group
+            artifactId project.name
+            version project.version
+
+            artifact sourceJar {
+                classifier 'sources'
+            }
+
+            withPom(pom)
         }
     }
 }
 
 model {
-    tasks.generatePomFileForMavenPublication {
+    tasks.generatePomFileForMavenProjectPublication {
         destination = file("$buildDir/libs/${project.name}-${version}.pom")
     }
 }
+
 
 bintray {
     user = findProperty('buser')
@@ -73,7 +89,7 @@ bintray {
         version {
             name = "${project.version}"
             desc = 'Kotlin definition files for the jQuery library.'
-            released  = new Date()
+            released = new Date()
         }
     }
     filesSpec {
@@ -83,5 +99,5 @@ bintray {
 }
 
 bintrayUpload {
-    dependsOn "generatePomFileForMavenPublication"
+    dependsOn "generatePomFileForMavenProjectPublication"
 }

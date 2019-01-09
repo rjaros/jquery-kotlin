@@ -2,20 +2,16 @@
 
 package pl.treksoft.jquery
 
-import kotlin.js.*
+import org.w3c.dom.Document
+import org.w3c.dom.DocumentFragment
+import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.Node
+import org.w3c.dom.Text
+import org.w3c.dom.XMLDocument
+import org.w3c.dom.events.Event
+import org.w3c.xhr.XMLHttpRequest
 import kotlin.js.Json
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
 
 external interface JQueryAjaxSettings {
     var accepts: Any? get() = definedExternally; set(value) = definedExternally
@@ -29,7 +25,7 @@ external interface JQueryAjaxSettings {
     var converters: Json? get() = definedExternally; set(value) = definedExternally
     var crossDomain: Boolean? get() = definedExternally; set(value) = definedExternally
     var data: Any? get() = definedExternally; set(value) = definedExternally
-    val dataFilter: ((data: Any, ty: Any) -> Any)? get() = definedExternally
+    val dataFilter: ((data: Any, ty: Any) -> Any?)? get() = definedExternally
     var dataType: String? get() = definedExternally; set(value) = definedExternally
     val error: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: String) -> Any?)? get() = definedExternally
     var global: Boolean? get() = definedExternally; set(value) = definedExternally
@@ -56,7 +52,7 @@ external interface JQueryAjaxSettings {
 external interface JQueryXHR : XMLHttpRequest, JQueryPromise<Any> {
     override fun overrideMimeType(mimeType: String): Any
     fun abort(statusText: String? = definedExternally /* null */)
-    fun <R> then(doneCallback: (data: Any, textStatus: String, jqXHR: JQueryXHR) -> dynamic /* R | JQueryPromise<R> */, failCallback: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: Any) -> Unit)? = definedExternally /* null */): JQueryPromise<R>
+    fun <R> then(doneCallback: (data: Any, textStatus: String, jqXHR: JQueryXHR) -> R, failCallback: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: Any) -> Unit)? = definedExternally /* null */): JQueryPromise<R>
     var responseJSON: Any? get() = definedExternally; set(value) = definedExternally
     fun error(xhr: JQueryXHR, textStatus: String, errorThrown: String)
 }
@@ -76,8 +72,8 @@ external interface JQueryCallback {
     fun remove(callbacks: Array<Function<*>>): JQueryCallback
 }
 external interface JQueryGenericPromise<T> {
-    fun <U> then(doneFilter: (value: T? /*= null*/, values: Any) -> dynamic /* U | JQueryPromise<U> */, failFilter: ((reasons: Any) -> Any?)? = definedExternally /* null */, progressFilter: ((progression: Any) -> Any)? = definedExternally /* null */): JQueryPromise<U>
-    fun then(doneFilter: (value: T? /*= null*/, values: Any) -> Unit, failFilter: ((reasons: Any) -> Any)? = definedExternally /* null */, progressFilter: ((progression: Any) -> Any)? = definedExternally /* null */): JQueryPromise<Unit>
+    fun <U> then(doneFilter: (value: T? /*= null*/, values: Any) -> dynamic /* U | JQueryPromise<U> */, failFilter: ((reasons: Any) -> Any?)? = definedExternally /* null */, progressFilter: ((progression: Any) -> Any?)? = definedExternally /* null */): JQueryPromise<U>
+    fun then(doneFilter: (value: T? /*= null*/, values: Any) -> Unit, failFilter: ((reasons: Any) -> Any?)? = definedExternally /* null */, progressFilter: ((progression: Any) -> Any?)? = definedExternally /* null */): JQueryPromise<Unit>
 }
 external interface JQueryPromiseCallback<T> {
     @nativeInvoke
@@ -95,51 +91,51 @@ external interface JQueryPromiseOperator<T, U> {
 }
 external interface JQueryPromise<T> : JQueryGenericPromise<T> {
     fun state(): String
-    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg alwaysCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
-    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg alwaysCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
-    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg alwaysCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
-    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg alwaysCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
+    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg alwaysCallbacksN: JQueryPromiseCallback<Any>): JQueryPromise<T>
+    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg alwaysCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
+    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg alwaysCallbacksN: JQueryPromiseCallback<Any>): JQueryPromise<T>
+    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg alwaysCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
     fun done(doneCallback1: JQueryPromiseCallback<T>? = definedExternally /* null */, vararg doneCallbackN: JQueryPromiseCallback<T>): JQueryPromise<T>
     fun done(doneCallback1: JQueryPromiseCallback<T>? = definedExternally /* null */, vararg doneCallbackN: Array<JQueryPromiseCallback<T>>): JQueryPromise<T>
     fun done(doneCallback1: Array<JQueryPromiseCallback<T>>? = definedExternally /* null */, vararg doneCallbackN: JQueryPromiseCallback<T>): JQueryPromise<T>
     fun done(doneCallback1: Array<JQueryPromiseCallback<T>>? = definedExternally /* null */, vararg doneCallbackN: Array<JQueryPromiseCallback<T>>): JQueryPromise<T>
-    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
-    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
-    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg failCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
-    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg failCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
+    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbacksN: JQueryPromiseCallback<Any>): JQueryPromise<T>
+    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
+    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg failCallbacksN: JQueryPromiseCallback<Any>): JQueryPromise<T>
+    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg failCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
     fun progress(progressCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg progressCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
     fun progress(progressCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg progressCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
     fun progress(progressCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg progressCallbackN: JQueryPromiseCallback<Any>): JQueryPromise<T>
     fun progress(progressCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg progressCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryPromise<T>
-    fun pipe(doneFilter: ((x: Any) -> Any)? = definedExternally /* null */, failFilter: ((x: Any) -> Any)? = definedExternally /* null */, progressFilter: ((x: Any) -> Any)? = definedExternally /* null */): JQueryPromise<Any>
+    fun pipe(doneFilter: ((x: Any) -> Any?)? = definedExternally /* null */, failFilter: ((x: Any) -> Any?)? = definedExternally /* null */, progressFilter: ((x: Any) -> Any?)? = definedExternally /* null */): JQueryPromise<Any>
     fun promise(target: Any? = definedExternally /* null */): JQueryPromise<T>
 }
 external interface JQueryDeferred<T> : JQueryGenericPromise<T> {
     fun state(): String
-    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg alwaysCallbackN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
-    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg alwaysCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
-    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg alwaysCallbackN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
-    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg alwaysCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
+    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg alwaysCallbacksN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
+    fun always(alwaysCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg alwaysCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
+    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg alwaysCallbacksN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
+    fun always(alwaysCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg alwaysCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
     fun done(doneCallback1: JQueryPromiseCallback<T>? = definedExternally /* null */, vararg doneCallbackN: JQueryPromiseCallback<T>): JQueryDeferred<T>
     fun done(doneCallback1: JQueryPromiseCallback<T>? = definedExternally /* null */, vararg doneCallbackN: Array<JQueryPromiseCallback<T>>): JQueryDeferred<T>
     fun done(doneCallback1: Array<JQueryPromiseCallback<T>>? = definedExternally /* null */, vararg doneCallbackN: JQueryPromiseCallback<T>): JQueryDeferred<T>
     fun done(doneCallback1: Array<JQueryPromiseCallback<T>>? = definedExternally /* null */, vararg doneCallbackN: Array<JQueryPromiseCallback<T>>): JQueryDeferred<T>
-    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbackN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
-    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
-    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg failCallbackN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
-    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg failCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
+    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbacksN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
+    fun fail(failCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg failCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
+    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg failCallbacksN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
+    fun fail(failCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg failCallbacksN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
     fun progress(progressCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg progressCallbackN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
     fun progress(progressCallback1: JQueryPromiseCallback<Any>? = definedExternally /* null */, vararg progressCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
     fun progress(progressCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg progressCallbackN: JQueryPromiseCallback<Any>): JQueryDeferred<T>
     fun progress(progressCallback1: Array<JQueryPromiseCallback<Any>>? = definedExternally /* null */, vararg progressCallbackN: Array<JQueryPromiseCallback<Any>>): JQueryDeferred<T>
     fun notify(value: Any? = definedExternally /* null */, vararg args: Any): JQueryDeferred<T>
-    fun notifyWith(context: Any, args: Array<Any>? = definedExternally /* null */): JQueryDeferred<T>
+    fun notifyWith(context: Any, value: Array<Any>? = definedExternally /* null */): JQueryDeferred<T>
     fun reject(value: Any? = definedExternally /* null */, vararg args: Any): JQueryDeferred<T>
-    fun rejectWith(context: Any, args: Array<Any>? = definedExternally /* null */): JQueryDeferred<T>
+    fun rejectWith(context: Any, value: Array<Any>? = definedExternally /* null */): JQueryDeferred<T>
     fun resolve(value: T? = definedExternally /* null */, vararg args: Any): JQueryDeferred<T>
-    fun resolveWith(context: Any, args: Array<T>? = definedExternally /* null */): JQueryDeferred<T>
+    fun resolveWith(context: Any, value: Array<T>? = definedExternally /* null */): JQueryDeferred<T>
     fun promise(target: Any? = definedExternally /* null */): JQueryPromise<T>
-    fun pipe(doneFilter: ((x: Any) -> Any)? = definedExternally /* null */, failFilter: ((x: Any) -> Any)? = definedExternally /* null */, progressFilter: ((x: Any) -> Any)? = definedExternally /* null */): JQueryPromise<Any>
+    fun pipe(doneFilter: ((x: Any) -> Any?)? = definedExternally /* null */, failFilter: ((x: Any) -> Any?)? = definedExternally /* null */, progressFilter: ((x: Any) -> Any?)? = definedExternally /* null */): JQueryPromise<Any>
 }
 external interface BaseJQueryEventObject : Event {
     override var currentTarget: Element
@@ -220,20 +216,6 @@ external interface JQueryCoordinates {
     var left: Number
     var top: Number
 }
-external interface cssPropertySetter {
-    @nativeInvoke
-    operator fun invoke(index: Number, value: String? = definedExternally /* null */): dynamic /* String | Number */
-}
-external interface JQueryCssProperties {
-    @nativeGetter
-    operator fun get(propertyName: String): dynamic /* String | Number | cssPropertySetter */
-    @nativeSetter
-    operator fun set(propertyName: String, value: String)
-    @nativeSetter
-    operator fun set(propertyName: String, value: Number)
-    @nativeSetter
-    operator fun set(propertyName: String, value: cssPropertySetter)
-}
 external interface JQuerySerializeArrayElement {
     var name: String
     var value: String
@@ -280,7 +262,6 @@ external interface JQueryStatic {
     fun ajax(url: String, settings: JQueryAjaxSettings? = definedExternally /* null */): JQueryXHR
     fun ajaxPrefilter(dataTypes: String, handler: (opts: Any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) -> Any?)
     fun ajaxPrefilter(handler: (opts: Any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) -> Any?)
-    fun ajaxTransport(dataType: String, handler: (opts: Any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) -> Any?)
     var ajaxSettings: JQueryAjaxSettings
     fun ajaxSetup(options: JQueryAjaxSettings)
     fun get(url: String, success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any?)? = definedExternally /* null */, dataType: String? = definedExternally /* null */): JQueryXHR
@@ -299,9 +280,9 @@ external interface JQueryStatic {
     fun Callbacks(flags: String? = definedExternally /* null */): JQueryCallback
     fun holdReady(hold: Boolean)
     @nativeInvoke
-    operator fun invoke(selector: String, context: Element? = definedExternally /* null */): JQuery
+    operator fun invoke(selector: String, context: Element): JQuery
     @nativeInvoke
-    operator fun invoke(selector: String, context: JQuery? = definedExternally /* null */): JQuery
+    operator fun invoke(selector: String, context: JQuery): JQuery
     @nativeInvoke
     operator fun invoke(element: Element): JQuery
     @nativeInvoke
@@ -309,13 +290,13 @@ external interface JQueryStatic {
     @nativeInvoke
     operator fun invoke(callback: (jQueryAlias: JQueryStatic? /*= null*/) -> Any?): JQuery
     @nativeInvoke
-    operator fun invoke(`object`: Any): JQuery
+    operator fun invoke(`object`: Any?): JQuery
     @nativeInvoke
     operator fun invoke(`object`: JQuery): JQuery
     @nativeInvoke
     operator fun invoke(): JQuery
     @nativeInvoke
-    operator fun invoke(html: String, ownerDocument: Document? = definedExternally /* null */): JQuery
+    operator fun invoke(html: String, ownerDocument: Document): JQuery
     @nativeInvoke
     operator fun invoke(html: String, attributes: Any): JQuery
     fun noConflict(removeAll: Boolean? = definedExternally /* null */): JQueryStatic
@@ -335,17 +316,17 @@ external interface JQueryStatic {
     fun <T> Deferred(beforeStart: ((deferred: JQueryDeferred<T>) -> Any?)? = definedExternally /* null */): JQueryDeferred<T>
     var easing: JQueryEasingFunctions
     var fx: `T$1`
-    fun proxy(func: (args: Any) -> Any?, context: Any, vararg additionalArguments: Any): Any
+    fun proxy(fnction: (args: Any) -> Any, context: Any, vararg additionalArguments: Any): Any
     fun proxy(context: Any, name: String, vararg additionalArguments: Any): Any
     var Event: JQueryEventConstructor
     fun error(message: Any): JQuery
     var expr: Any
-    var fn: JQuery
+    var fn: Any
     var isReady: Boolean
     var support: JQuerySupport
     fun contains(container: Element, contained: Element): Boolean
-    fun <T> each(collection: Array<T>, callback: (indexInArray: Number, valueOfElement: T) -> dynamic /* Boolean | Unit */): Array<T>
-    fun <T : Any> each(collection: T, callback: (keyInObject: String, valueOfElement: Any) -> dynamic /* Boolean | Unit */): T
+    fun <T> each(collection: Array<T>, callback: (indexInArray: Number, valueOfElement: T) -> Any?): Any
+    fun each(collection: Any, callback: (indexInArray: Any, valueOfElement: Any) -> Any?): Any
     fun extend(target: Any, object1: Any? = definedExternally /* null */, vararg objectN: Any): Any
     fun extend(deep: Boolean, target: Any, object1: Any? = definedExternally /* null */, vararg objectN: Any): Any
     fun globalEval(code: String): Any
@@ -360,37 +341,24 @@ external interface JQueryStatic {
     fun isXMLDoc(node: Node): Boolean
     fun makeArray(obj: Any): Array<Any>
     fun <T, U> map(array: Array<T>, callback: (elementOfArray: T? /*= null*/, indexInArray: Number? /*= null*/) -> U): Array<U>
-    fun map(arrayOrObject: Any, callback: (value: Any? /*= null*/, indexOrKey: Any? /*= null*/) -> Any): Any
+    fun map(arrayOrObject: Any, callback: (value: Any? /*= null*/, indexOrKey: Any? /*= null*/) -> Any?): Any
     fun <T> merge(first: Array<T>, second: Array<T>): Array<T>
     fun noop(): Any
     fun now(): Number
     fun parseJSON(json: String): Any
     fun parseXML(data: String): XMLDocument
     fun trim(str: String): String
-    fun type(obj: Any): dynamic /* Any /* "array" */ | Any /* "boolean" */ | Any /* "date" */ | Any /* "error" */ | Any /* "function" */ | Any /* "null" */ | Any /* "number" */ | Any /* "object" */ | Any /* "regexp" */ | Any /* "string" */ | Any /* "symbol" */ | Any /* "undefined" */ */
-    fun <T : Element> unique(array: Array<T>): Array<T>
+    fun type(obj: Any): String
+    fun unique(array: Array<Element>): Array<Element>
     fun parseHTML(data: String, context: HTMLElement? = definedExternally /* null */, keepScripts: Boolean? = definedExternally /* null */): Array<Any>
     fun parseHTML(data: String, context: Document? = definedExternally /* null */, keepScripts: Boolean? = definedExternally /* null */): Array<Any>
+    fun get(url: String): JQueryXHR
+    fun getJSON(url: String): JQueryXHR
+    fun post(url: String): JQueryXHR
+    @nativeInvoke
+    operator fun invoke(selector: String): JQuery
+    fun parseHTML(data: String): Array<Any>
 }
-external interface `T$2` {
-    @nativeGetter
-    operator fun get(key: String): ((eventObject: JQueryEventObject, args: Any) -> Any?)?
-    @nativeSetter
-    operator fun set(key: String, value: (eventObject: JQueryEventObject, args: Any) -> Any?)
-}
-external interface `T$3` {
-    @nativeGetter
-    operator fun get(key: String): ((eventObject: JQueryEventObject, args: Any) -> Any?)?
-    @nativeSetter
-    operator fun set(key: String, value: (eventObject: JQueryEventObject, args: Any) -> Any?)
-}
-external interface `T$4` {
-    @nativeGetter
-    operator fun get(method: String): ((args: Any) -> Any?)?
-    @nativeSetter
-    operator fun set(method: String, value: (args: Any) -> Any?)
-}
-
 external interface JQuery {
     fun ajaxComplete(handler: (event: JQueryEventObject, XMLHttpRequest: XMLHttpRequest, ajaxOptions: Any) -> Any?): JQuery
     fun ajaxError(handler: (event: JQueryEventObject, jqXHR: JQueryXHR, ajaxSettings: JQueryAjaxSettings, thrownError: Any) -> Any?): JQuery
@@ -408,7 +376,6 @@ external interface JQuery {
     fun attr(attributeName: String): String
     fun attr(attributeName: String, value: String): JQuery
     fun attr(attributeName: String, value: Number): JQuery
-    fun attr(attributeName: String, value: Nothing?): JQuery
     fun attr(attributeName: String, func: (index: Number, attr: String) -> dynamic /* String | Number */): JQuery
     fun attr(attributes: Any): JQuery
     fun hasClass(className: String): Boolean
@@ -434,30 +401,29 @@ external interface JQuery {
     fun `val`(value: Number): JQuery
     fun `val`(func: (index: Number, value: String) -> String): JQuery
     fun css(propertyName: String): String
-    fun css(propertyNames: Array<String>): Any
     fun css(propertyName: String, value: String): JQuery
     fun css(propertyName: String, value: Number): JQuery
     fun css(propertyName: String, value: (index: Number, value: String) -> dynamic /* String | Number */): JQuery
-    fun css(properties: JQueryCssProperties): JQuery
+    fun css(properties: Any): JQuery
     fun height(): Number
     fun height(value: Number): JQuery
     fun height(value: String): JQuery
     fun height(func: (index: Number, height: Number) -> dynamic /* Number | String */): JQuery
     fun innerHeight(): Number
-    fun innerHeight(value: Number): JQuery
-    fun innerHeight(value: String): JQuery
+    fun innerHeight(height: Number): JQuery
+    fun innerHeight(height: String): JQuery
     fun innerWidth(): Number
-    fun innerWidth(value: Number): JQuery
-    fun innerWidth(value: String): JQuery
+    fun innerWidth(width: Number): JQuery
+    fun innerWidth(width: String): JQuery
     fun offset(): JQueryCoordinates
     fun offset(coordinates: JQueryCoordinates): JQuery
     fun offset(func: (index: Number, coords: JQueryCoordinates) -> JQueryCoordinates): JQuery
     fun outerHeight(includeMargin: Boolean? = definedExternally /* null */): Number
-    fun outerHeight(value: Number): JQuery
-    fun outerHeight(value: String): JQuery
+    fun outerHeight(height: Number): JQuery
+    fun outerHeight(height: String): JQuery
     fun outerWidth(includeMargin: Boolean? = definedExternally /* null */): Number
-    fun outerWidth(value: Number): JQuery
-    fun outerWidth(value: String): JQuery
+    fun outerWidth(width: Number): JQuery
+    fun outerWidth(width: String): JQuery
     fun position(): JQueryCoordinates
     fun scrollLeft(): Number
     fun scrollLeft(value: Number): JQuery
@@ -567,7 +533,7 @@ external interface JQuery {
     fun focusout(): JQuery
     fun focusout(handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun focusout(eventData: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
-    fun hover(handlerIn: (eventObject: JQueryEventObject) -> Any?, handlerOut: (eventObject: JQueryEventObject) -> Any?): JQuery
+    fun hover(handlerIn: (eventObject: JQueryEventObject) -> Any, handlerOut: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun hover(handlerInOut: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun keydown(): JQuery
     fun keydown(handler: (eventObject: JQueryKeyEventObject) -> Any?): JQuery
@@ -610,8 +576,8 @@ external interface JQuery {
     fun on(events: String, data: Any, handler: (eventObject: JQueryEventObject, args: Any) -> Any?): JQuery
     fun on(events: String, selector: String, handler: (eventObject: JQueryEventObject, eventData: Any) -> Any?): JQuery
     fun on(events: String, selector: String, data: Any, handler: (eventObject: JQueryEventObject, eventData: Any) -> Any?): JQuery
-    fun on(events: `T$2`, selector: String? = definedExternally /* null */, data: Any? = definedExternally /* null */): JQuery
-    fun on(events: `T$3`, data: Any? = definedExternally /* null */): JQuery
+    fun on(events: Json, selector: String? = definedExternally /* null */, data: Any? = definedExternally /* null */): JQuery
+    fun on(events: Json, data: Any? = definedExternally /* null */): JQuery
     fun one(events: String, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun one(events: String, data: Any, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
     fun one(events: String, selector: String, handler: (eventObject: JQueryEventObject) -> Any?): JQuery
@@ -731,7 +697,7 @@ external interface JQuery {
     fun wrapInner(wrappingElement: Element): JQuery
     fun wrapInner(wrappingElement: String): JQuery
     fun wrapInner(func: (index: Number) -> String): JQuery
-    fun each(func: (index: Number, elem: Element) -> dynamic /* Boolean | Unit */): JQuery
+    fun each(func: (index: Number, elem: Element) -> Any?): JQuery
     fun get(index: Number): HTMLElement
     fun get(): Array<HTMLElement>
     fun index(): Number
@@ -740,6 +706,10 @@ external interface JQuery {
     fun index(selector: Element): Number
     var length: Number
     var selector: String
+    @nativeGetter
+    operator fun get(index: String): Any?
+    @nativeSetter
+    operator fun set(index: String, value: Any)
     @nativeGetter
     operator fun get(index: Number): HTMLElement?
     @nativeSetter
@@ -758,7 +728,7 @@ external interface JQuery {
     fun end(): JQuery
     fun eq(index: Number): JQuery
     fun filter(selector: String): JQuery
-    fun filter(func: (index: Number, element: Element) -> Boolean): JQuery
+    fun filter(func: (index: Number, element: Element) -> Any?): JQuery
     fun filter(element: Element): JQuery
     fun filter(obj: JQuery): JQuery
     fun find(selector: String): JQuery
@@ -772,7 +742,7 @@ external interface JQuery {
     fun `is`(obj: JQuery): Boolean
     fun `is`(elements: Any): Boolean
     fun last(): JQuery
-    fun map(callback: (index: Number, domElement: Element) -> Any): JQuery
+    fun map(callback: (index: Number, domElement: Element) -> Any?): JQuery
     fun next(selector: String? = definedExternally /* null */): JQuery
     fun nextAll(selector: String? = definedExternally /* null */): JQuery
     fun nextUntil(selector: String? = definedExternally /* null */, filter: String? = definedExternally /* null */): JQuery
@@ -801,7 +771,27 @@ external interface JQuery {
     fun queue(callback: Function<*>): JQuery
     fun queue(queueName: String, newQueue: Array<Function<*>>): JQuery
     fun queue(queueName: String, callback: Function<*>): JQuery
-    fun extend(`object`: `T$4`): JQuery
+    fun load(url: String): JQuery
+    fun animate(properties: Any): JQuery
+    fun fadeIn(): JQuery
+    fun fadeOut(): JQuery
+    fun fadeTo(duration: String, opacity: Number): JQuery
+    fun fadeTo(duration: Number, opacity: Number): JQuery
+    fun fadeToggle(): JQuery
+    fun hide(): JQuery
+    fun show(): JQuery
+    fun slideDown(): JQuery
+    fun slideToggle(): JQuery
+    fun slideUp(): JQuery
+    fun stop(): JQuery
+    fun toggle(): JQuery
+    fun on(events: Json): JQuery
+    fun one(events: Json): JQuery
+    fun trigger(eventType: String): JQuery
+    fun trigger(event: JQueryEventObject): JQuery
+    fun nextUntil(): JQuery
+    fun parentsUntil(): JQuery
+    fun prevUntil(): JQuery
 }
 
 @JsModule("jquery")

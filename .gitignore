@@ -6,4 +6,6 @@ gradlew.bat
 /.gradle
 /.idea
 *.iml
+/build-mvn.sh
+/build-mvnlocal.sh
 /upload.sh
