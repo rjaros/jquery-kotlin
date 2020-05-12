@@ -11,26 +11,22 @@ The definition files are based on jQuery version 2.x.
 ### How to use
 
 The releases of this project are available from bintray.
-To use it in your project add the following code in your build.gradle file.
+To use it in your project add the following code in your build.gradle.kts file.
 
     repositories {
         ...
-        maven { url = 'https://dl.bintray.com/rjaros/kotlin' }
+        maven { url = uri("https://dl.bintray.com/rjaros/kotlin") }
     }
 
     dependencies {
         ...
-        compile "pl.treksoft:jquery-kotlin:[version]"
+        api("pl.treksoft:jquery-kotlin:$jqueryKotlinVersion")
     }
 
-Use [kotlin-frontend-plugin](https://github.com/Kotlin/kotlin-frontend-plugin) to include jQuery to your project.
+Don't forget to include jQuery in your project.
 
-    kotlinFrontend {
+
+    dependencies {
         ...
-        npm {
-            ...
-            dependency "jquery"
-            ...
-        }
-        ...
+        implementation(npm("jquery"))
     }
