@@ -1,8 +1,5 @@
-/build
-/out
-/.gradle
-/.idea
+.*/
+build/
 *.iml
-/build-mvn.sh
 /build-mvnlocal.sh
 /upload.sh
