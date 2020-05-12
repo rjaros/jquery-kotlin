@@ -77,4 +77,7 @@ tasks {
     getByName("JsJar", Jar::class) {
         from("${project.buildDir}/js/packages/jquery-kotlin/package.json")
     }
+    getByName("JsIrJar", Jar::class) {
+        from("${project.buildDir}/js/packages/jquery-kotlin-JsIr/package.json")
+    }
 }
