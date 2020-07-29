@@ -6,7 +6,7 @@ https://jquery.com/
 
 ### Project info
 
-The definition files are based on jQuery version 2.x.
+The definition files are based on jQuery version 2.x, but are compatible with newer versions as well.
 
 ### How to use
 
@@ -28,5 +28,5 @@ Don't forget to include jQuery in your project.
 
     dependencies {
         ...
-        implementation(npm("jquery"))
+        implementation(npm("jquery", "^3.5.1"))
     }
