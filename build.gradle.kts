@@ -28,7 +28,7 @@ repositories {
 val kotlinVersion: String by System.getProperties()
 
 kotlin {
-    target {
+    js {
         val isProductionBuild = project.extra.get("production") as Boolean
         compilations.all {
             kotlinOptions {
