@@ -1,6 +1,6 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE")
 
-package pl.treksoft.jquery
+package io.kvision.jquery
 
 import org.w3c.dom.Document
 import org.w3c.dom.DocumentFragment
