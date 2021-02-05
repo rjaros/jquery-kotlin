@@ -1,3 +1,4 @@
+import de.marcphilipp.gradle.nexus.NexusPublishExtension
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPom
@@ -38,22 +39,18 @@ fun Project.setupSigning() {
 }
 
 fun Project.setupPublication() {
-    plugins.apply("maven-publish")
-
     extensions.getByType<PublishingExtension>().run {
         publications.withType<MavenPublication>().all {
             pom {
                 defaultPom()
             }
         }
-
+    }
+    extensions.getByType<NexusPublishExtension>().run {
         repositories {
-            maven {
-                url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-                credentials {
-                    username = findProperty("ossrhUsername")?.toString()
-                    password = findProperty("ossrhPassword")?.toString()
-                }
+            sonatype {
+                username.set(findProperty("ossrhUsername")?.toString())
+                password.set(findProperty("ossrhPassword")?.toString())
             }
         }
     }
