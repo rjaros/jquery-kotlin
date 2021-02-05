@@ -10,23 +10,10 @@ The definition files are based on jQuery version 2.x, but are compatible with ne
 
 ### How to use
 
-The releases of this project are available from bintray.
+The artifacts of this project are published to Maven Central.
 To use it in your project add the following code in your build.gradle.kts file.
 
-    repositories {
-        ...
-        maven { url = uri("https://dl.bintray.com/rjaros/kotlin") }
-    }
-
     dependencies {
         ...
-        api("pl.treksoft:jquery-kotlin:$jqueryKotlinVersion")
-    }
-
-Don't forget to include jQuery in your project.
-
-
-    dependencies {
-        ...
-        implementation(npm("jquery", "^3.5.1"))
+        api("io.kvision:jquery-kotlin:$jqueryKotlinVersion")
     }

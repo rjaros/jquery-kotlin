@@ -1,6 +1,7 @@
 plugins {
     kotlin("js")
     id("maven-publish")
+    id("signing")
 }
 
 repositories {
@@ -49,4 +50,5 @@ publishing {
     }
 }
 
+setupSigning()
 setupPublication()
