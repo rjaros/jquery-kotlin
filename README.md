@@ -1,5 +1,8 @@
 # jquery-kotlin
 
+![https://kotl.in/jsirsupported](https://img.shields.io/badge/Kotlin%2FJS-IR%20supported-yellow)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Kotlin definition files for the jQuery library.
 
 https://jquery.com/
